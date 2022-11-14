@@ -7,30 +7,30 @@
  * Tato metoda je volána serverem (příjemcem) při přijetí zakódovaných dat od klienta (odesílatele).
  * V případě použití více doménových jmen pro zakódování dat, volejte funkci pro každé z nich.
  *
- * @param file_path Cesta k cílovému souboru
- * @param encoded_data Zakódovaná data do doménového jména (např.: "acfe2a42b.example.com")
+ * @param filePath Cesta k cílovému souboru
+ * @param encodedData Zakódovaná data do doménového jména (např.: "acfe2a42b.example.com")
  */
-void dns_receiver__on_query_parsed(char *file_path, char *encoded_data);
+void dns_receiver__on_query_parsed(char *filePath, char *encodedData);
 
 /**
  * Tato metoda je volána serverem (příjemcem) při příjmu části dat od klienta (odesílatele).
  *
  * @param source IPv4 adresa odesílatele
- * @param file_path Cesta k cílovému souboru
- * @param chunk_id Identifikátor části dat
- * @param chunk_size Velikost části dat v bytech
+ * @param filePath Cesta k cílovému souboru
+ * @param chunkId Identifikátor části dat
+ * @param chunkSize Velikost části dat v bytech
  */
-void dns_receiver__on_chunk_received(struct in_addr *source, char *file_path, int chunk_id, int chunk_size);
+void dns_receiver__on_chunk_received(struct in_addr *source, char *filePath, int chunkId, int chunkSize);
 
 /**
  * Tato metoda je volána serverem (příjemcem) při příjmu části dat od klienta (odesílatele).
  *
  * @param source IPv6 adresa odesílatele
- * @param file_path Cesta k cílovému souboru
- * @param chunk_id Identifikátor části dat
- * @param chunk_size Velikost části dat v bytech
+ * @param filePath Cesta k cílovému souboru
+ * @param chunkId Identifikátor části dat
+ * @param chunkSize Velikost části dat v bytech
  */
-void dns_receiver__on_chunk_received6(struct in6_addr *source, char *file_path, int chunk_id, int chunk_size);
+void dns_receiver__on_chunk_received6(struct in6_addr *source, char *filePath, int chunkId, int chunkSize);
 
 /**
  * Tato metoda je volána serverem (příjemcem) při zahájení přenosu od klienta (odesílatele).
@@ -49,9 +49,9 @@ void dns_receiver__on_transfer_init6(struct in6_addr *source);
 /**
  * Tato metoda je volána serverem (příjemcem) při dokončení přenosu jednoho souboru od klienta (odesílatele).
  *
- * @param file_path Cesta k cílovému souboru
- * @param file_size Celková velikost přijatého souboru v bytech
+ * @param filePath Cesta k cílovému souboru
+ * @param fileSize Celková velikost přijatého souboru v bytech
  */
-void dns_receiver__on_transfer_completed(char *file_path, int file_size);
+void dns_receiver__on_transfer_completed(char *filePath, int fileSize);
 
 #endif //ISA22_DNS_RECEIVER_EVENTS_H

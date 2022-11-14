@@ -3,38 +3,28 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-
-void init_string(char** dst, char* src) {
-    *dst = (char*)malloc(sizeof(char) * strlen(src));
-    strcpy(*dst, src);
-}
+#include "logger.h"
+#include "dns.h"
 
 
-void log_message(char* message) {
-    fprintf(stderr, "%s\n", message);
-}
-
-
-void exit_w_error(char* message) {
-    log_message(message);
-    exit(EXIT_FAILURE);
-}
-
-
-void get_default_dns(char* dns_ip) {
-    char buffer[1024];
-    bool get_dns = false;
-    FILE* f_ptr;
-    if ((f_ptr = fopen("/etc/resolv.conf", "r")) == NULL) {
-        exit_w_error("Failed opening /etc/resolv.conf");
+void validate__base_host(char* base_host) {
+    
+    /* copy base_host to tmp variable */
+    size_t length = strlen(base_host);
+    char host[length];
+    strcpy(host, base_host);
+    /* check if the first (0.) character is period */
+    if (host[0] == '.') { ERROR("Base host should not start with \'.\'\n"); }
+    
+    /* should allow at least 1 character to be transfered */
+    if (strlen(host) > 150) {
+        ERROR("Domain's base is too long, it should be shorter than 150\n");
     }
-    while (fscanf(f_ptr, " %1023s", buffer) == 1) {
-        if (get_dns) {
-            init_string(dns_ip, buffer);
-            return;
-        }
-        if (!strcmp(buffer, "nameserver")) {
-            get_dns = true;
-        }
+    const char delim[2] = ".";
+    char* label = strtok(host, delim);
+    while (label != NULL) {
+        if (strlen(label) > MAX_LABEL_LENGTH) { FERROR("Label %s in domain's base exceeds the maximum length for a single label", label); }
+        label = strtok(NULL, delim);
     }
+
 }

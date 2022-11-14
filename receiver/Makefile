@@ -1,4 +1,0 @@
-CC = gcc
-
-receiver:
-	$(CC) -o dns_receiver *.c ../include/*.c

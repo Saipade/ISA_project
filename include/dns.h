@@ -4,6 +4,13 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#define DNS_RESPONSE__PTR 192
+#define DNS_RESPONSE__QNAME_PTR 12
+#define MAX_LABEL_LENGTH 63             // maximum label size in domain name
+#define DNS_PORT 53                     // dns port
+
+#define MAX_QUERY_LENGTH 269            // dns header (12) + single dns query (257)
+#define MAX_RESPONSE_LENGTH 285         // dns query (269) + single dns response (16)
 
 #pragma pack(1)
 
@@ -15,33 +22,20 @@ struct dns_header {
     /* id */
     uint16_t            id;             // unique identifier, same for both query and response
     /* flags */
-    unsigned char       qr : 1;         // 0 for query, 1 for response
-    unsigned char       opcode : 4;     // specifies kind of query
-    unsigned char       aa : 1;         // whether or not the response is authoritative
-    unsigned char       tc : 1;         // specifies that this message was truncated
-    unsigned char       rd : 1;         // if recursion is desired
-    unsigned char       ra : 1;         // if recursive query support is available
-    unsigned char       z : 3;          // reserved
-    unsigned char       rcode : 4;      // response code
+    uint16_t            flags;          // qr : 1
+                                        // opcode : 4
+                                        // aa : 1
+                                        // tc : 1
+                                        // rd : 1
+                                        // ra : 1
+                                        // z : 3
+                                        // rcode : 4
     /* counts */
-    uint16_t            qdcount;        // number of entries in the question section
+    uint16_t            qwcount;        // number of entries in the question section
     uint16_t            ancount;        // number of resource records in the answer section
     uint16_t            nscount;        // number of name server resource records in the authority records section 
     uint16_t            arcount;        // number of resource records in the additional records section
     
-};
-
-
-/**
- *  Structure that represents dns response
- */
-struct dns_response {
-	char*		        name;
-	uint16_t	        record_type;
-	uint16_t	        record_class;
-	uint32_t	        ttl;
-	uint16_t	        rdata_length;
-	char*		        rdata;
 };
 
 
@@ -55,9 +49,18 @@ struct dns_query {
 };
 
 
-struct packet_data {
-    struct dns_header   header;
-    char*               payload;    
+/**
+ *  Structure that represents dns response
+ */
+struct dns_response {
+	uint8_t             response_type;  // always c0 (PTR)
+    uint8_t             offset;         // always 0c (pointer to the qname)
+	uint16_t	        record_type;
+	uint16_t	        record_class;   
+	uint32_t	        ttl;            // time to live
+	uint16_t	        rdata_length;   // length of rdata
+	uint32_t	        rdata;          // ip
 };
+
 
 #endif  // _DNS_H
